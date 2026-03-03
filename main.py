@@ -1,7 +1,7 @@
 import os
 import requests
 import logging
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Request
 from pydantic import BaseModel
 from dotenv import load_dotenv
 
@@ -38,6 +38,16 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 # ===============================
+# 📡 Global Request Logging Middleware
+# ===============================
+@app.middleware("http")
+async def log_requests(request: Request, call_next):
+    logger.info(f"Incoming request → {request.method} {request.url}")
+    response = await call_next(request)
+    logger.info(f"Response sent → Status Code: {response.status_code}")
+    return response
+
+# ===============================
 # 📄 Request Models
 # ===============================
 class ReportRequest(BaseModel):
@@ -65,19 +75,23 @@ def root():
 # ===============================
 def call_hf_space(endpoint: str, input_data: str):
     try:
+        logger.info(f"Calling HF endpoint → {endpoint}")
+
         payload = {"data": [input_data]}
 
         response = requests.post(
             f"{BASE_URL}/{endpoint}",
             json=payload,
             headers=HEADERS,
-            timeout=60  # prevent hanging
+            timeout=60
         )
 
         response.raise_for_status()
 
         result = response.json()
         output = result.get("data", ["No response received"])[0]
+
+        logger.info(f"HF response received successfully → {endpoint}")
 
         return output
 
@@ -99,10 +113,14 @@ def call_hf_space(endpoint: str, input_data: str):
 # ===============================
 @app.post("/analyze-report")
 def analyze_report(request: ReportRequest):
+    logger.info("Endpoint hit → /analyze-report")
+
     if not request.report_json_text.strip():
         raise HTTPException(status_code=400, detail="Report text cannot be empty")
 
     output = call_hf_space("run_report", request.report_json_text)
+
+    logger.info("Response returned → /analyze-report")
 
     return {
         "status": "success",
@@ -115,10 +133,14 @@ def analyze_report(request: ReportRequest):
 # ===============================
 @app.post("/analyze-symptom")
 def analyze_symptom(request: SymptomRequest):
+    logger.info("Endpoint hit → /analyze-symptom")
+
     if not request.symptoms.strip():
         raise HTTPException(status_code=400, detail="Symptoms cannot be empty")
 
     output = call_hf_space("run_symptom", request.symptoms)
+
+    logger.info("Response returned → /analyze-symptom")
 
     return {
         "status": "success",
@@ -131,10 +153,14 @@ def analyze_symptom(request: SymptomRequest):
 # ===============================
 @app.post("/chat")
 def chat(request: ChatRequest):
+    logger.info("Endpoint hit → /chat")
+
     if not request.message.strip():
         raise HTTPException(status_code=400, detail="Message cannot be empty")
 
     output = call_hf_space("run_chat", request.message)
+
+    logger.info("Response returned → /chat")
 
     return {
         "status": "success",
