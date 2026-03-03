@@ -3,3 +3,5 @@ uvicorn
 gunicorn
 huggingface_hub
 gradio_client
+requests
+python-dotenv
