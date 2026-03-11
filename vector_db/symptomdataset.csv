@@ -1,0 +1,67 @@
+Disease,Symptoms
+Influenza,fever headache body pain chills fatigue sore throat runny nose cough muscle aches
+COVID-19,fever dry cough fatigue loss of taste loss of smell shortness of breath body aches
+Common Cold,runny nose sore throat sneezing mild fever nasal congestion cough congestion
+Malaria,high fever chills sweating headache nausea vomiting muscle pain fatigue
+Typhoid,prolonged fever abdominal pain headache weakness loss of appetite constipation diarrhea
+Dengue Fever,high fever severe headache eye pain joint pain muscle pain rash nausea vomiting
+Tuberculosis,chronic cough coughing blood night sweats weight loss fatigue chest pain fever
+Pneumonia,high fever chest pain cough phlegm difficulty breathing fatigue chills
+Asthma,wheezing shortness of breath chest tightness coughing breathlessness
+Hypertension,headache dizziness blurred vision chest pain shortness of breath nosebleed
+Diabetes,increased thirst frequent urination fatigue blurred vision slow wound healing weight loss
+Anemia,fatigue weakness pale skin dizziness shortness of breath cold hands feet headache
+Gastroenteritis,nausea vomiting diarrhea stomach cramps fever dehydration abdominal pain
+Urinary Tract Infection,burning urination frequent urination lower abdominal pain cloudy urine fever
+Appendicitis,severe right lower abdominal pain nausea vomiting fever loss of appetite
+Jaundice,yellow skin yellow eyes dark urine pale stools fatigue abdominal pain itching
+Hepatitis B,fatigue nausea abdominal pain jaundice dark urine joint pain fever
+Hepatitis C,fatigue jaundice nausea loss of appetite dark urine abdominal pain
+Chickenpox,itchy rash blisters fever fatigue headache loss of appetite
+Measles,high fever cough runny nose red eyes rash white spots mouth
+Mumps,swollen salivary glands jaw pain fever headache muscle ache loss of appetite
+Rubella,rash fever swollen lymph nodes joint pain headache red eyes
+Whooping Cough,severe cough fits runny nose mild fever vomiting after coughing
+Meningitis,severe headache stiff neck fever sensitivity to light nausea vomiting rash
+Migraine,severe headache one side nausea vomiting sensitivity to light sound visual disturbances
+Epilepsy,seizures temporary confusion staring spells uncontrollable jerking movements
+Hypothyroidism,fatigue weight gain cold intolerance constipation dry skin hair loss depression
+Hyperthyroidism,weight loss rapid heartbeat sweating nervousness tremors heat intolerance
+GERD,heartburn regurgitation chest pain difficulty swallowing chronic cough sour taste
+Peptic Ulcer,burning stomach pain nausea bloating heartburn fatty food intolerance
+Irritable Bowel Syndrome,abdominal cramps bloating gas diarrhea constipation mucus in stool
+Crohn's Disease,diarrhea abdominal pain fatigue weight loss blood in stool fever
+Kidney Stones,severe back pain side pain abdominal pain nausea vomiting painful urination blood in urine
+Chronic Kidney Disease,fatigue swollen ankles puffy eyes decreased urination shortness of breath nausea
+Heart Failure,shortness of breath swollen legs fatigue rapid heartbeat persistent cough
+Angina,chest pain pressure shortness of breath nausea fatigue dizziness on exertion
+Rheumatoid Arthritis,joint pain stiffness swelling redness fatigue morning stiffness
+Gout,sudden severe joint pain swelling redness warmth big toe pain
+Osteoporosis,back pain fractures loss of height stooped posture bone pain
+Fibromyalgia,widespread muscle pain fatigue sleep problems headache depression cognitive difficulties
+Lupus,butterfly rash joint pain fatigue fever hair loss sensitivity to sun chest pain
+Multiple Sclerosis,numbness tingling weakness vision problems fatigue coordination problems
+Parkinson's Disease,tremors muscle stiffness slow movement balance problems speech changes
+Alzheimer's Disease,memory loss confusion mood changes difficulty speaking disorientation
+Depression,persistent sadness hopelessness fatigue sleep disturbance appetite changes loss of interest
+Anxiety Disorder,excessive worry restlessness rapid heartbeat sweating trembling difficulty concentrating
+Sinusitis,facial pain nasal congestion thick nasal discharge reduced smell headache sore throat
+Tonsillitis,sore throat difficulty swallowing swollen tonsils fever bad breath ear pain
+Ear Infection,ear pain hearing loss fluid drainage fever headache balance problems
+Conjunctivitis,red eyes discharge itching tearing crusting sensitivity to light
+Vertigo,dizziness spinning sensation nausea vomiting balance problems hearing loss
+Sleep Apnea,loud snoring gasping during sleep fatigue morning headache difficulty concentrating
+Celiac Disease,diarrhea bloating gas fatigue weight loss anemia abdominal pain
+Eczema,itchy skin rash dry skin scaly patches redness blisters
+Psoriasis,red patches silver scales dry cracked skin itching burning joint pain
+Acne,pimples blackheads whiteheads cysts oily skin scarring
+Chickungunya,sudden high fever severe joint pain muscle pain headache rash fatigue
+Leptospirosis,high fever headache muscle pain red eyes jaundice vomiting
+Vitamin D Deficiency,bone pain fatigue muscle weakness depression impaired immunity
+Iron Deficiency,fatigue weakness pale skin brittle nails dizziness cold sensitivity
+Scabies,intense itching rash burrowing in skin worse at night
+Dengue Hemorrhagic Fever,high fever severe bleeding low platelet rash abdominal pain vomiting
+Viral Fever,fever body pain headache fatigue weakness loss of appetite
+Heat Stroke,very high body temperature hot dry skin rapid heartbeat confusion loss of consciousness
+Food Poisoning,nausea vomiting diarrhea stomach cramps fever chills within hours of eating
+Pneumothorax,sudden sharp chest pain shortness of breath rapid heartbeat
