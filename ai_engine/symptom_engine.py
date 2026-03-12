@@ -33,6 +33,7 @@ _EMERGENCY_KEYWORDS = {
 }
 
 _EMERGENCY_RESPONSE = {
+    "emergency": True,
     "conditions": [],
     "summary": (
         "EMERGENCY: Your symptoms may indicate a life-threatening condition. "
@@ -109,4 +110,11 @@ def check_symptoms(symptoms: str) -> dict:
             "Please consult a doctor for a proper diagnosis."
         )
 
-    return {"conditions": conditions, "summary": summary}
+    return {"emergency": False, "conditions": conditions, "summary": summary}
+
+
+def run_symptom_check(symptoms: str) -> dict:
+    """Alias for check_symptoms, ensuring 'emergency' key is always present."""
+    result = check_symptoms(symptoms)
+    result.setdefault("emergency", False)
+    return result
