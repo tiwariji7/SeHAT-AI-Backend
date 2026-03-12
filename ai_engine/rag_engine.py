@@ -11,6 +11,11 @@ _symptom_matrix = None
 _diseases: list = []
 
 
+def initialize_rag() -> None:
+    """Eagerly build the TF-IDF index at startup."""
+    _build()
+
+
 def get_embedding_model():
     """Return the singleton TF-IDF vectorizer, lazy-built on first call."""
     global _vectorizer
@@ -53,4 +58,8 @@ def search(query: str = None, top_k: int = 5, query_embedding=None) -> list:
         for i in top_indices
         if sims[i] > 0.01
     ]
+
+
+# Alias for backward compatibility with symptom_engine imports
+search_symptoms = search
 
