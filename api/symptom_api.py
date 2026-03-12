@@ -2,8 +2,8 @@ import logging
 
 from fastapi import APIRouter, HTTPException
 
-from ai_engine.symptom_engine import check_symptoms
-from schemas.request_schema import SymptomRequest, SymptomResponse
+from ai_engine.symptom_engine import run_symptom_check
+from schemas.request_schema import SymptomRequest, SymptomResponse, ConditionResult
 
 logger = logging.getLogger(__name__)
 
@@ -20,11 +20,20 @@ def symptom_check(request: SymptomRequest):
         raise HTTPException(status_code=400, detail="The 'symptoms' field cannot be empty.")
 
     try:
-        result = check_symptoms(request.symptoms.strip())
-        return result
+        result = run_symptom_check(request.symptoms.strip())
+        conditions = [
+            ConditionResult(disease=c["disease"], confidence=c["confidence"])
+            for c in result["conditions"]
+        ]
+        return SymptomResponse(
+            emergency=result["emergency"],
+            conditions=conditions,
+            summary=result["summary"],
+        )
     except Exception as exc:
         logger.error("Symptom check error: %s", exc)
         raise HTTPException(
             status_code=500,
             detail="Symptom analysis failed. Please try again later.",
         )
+

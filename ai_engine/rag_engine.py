@@ -1,90 +1,56 @@
-import logging
-import os
-from typing import List, Optional
+"""Symptom similarity search using TF-IDF + cosine similarity.
 
-import faiss
-import numpy as np
-import pandas as pd
-from sentence_transformers import SentenceTransformer
+Replaces sentence-transformers + FAISS to remove the torch/CUDA dependency
+that caused Render free-tier port-scan timeouts.
+Only requires scikit-learn which is already in requirements.txt.
+"""
+from config import DATASET_PATH
 
-from config import DATASET_PATH, EMBEDDING_MODEL, FAISS_INDEX_PATH, TOP_K_RESULTS
-
-logger = logging.getLogger(__name__)
-
-# Module-level singletons — loaded once at startup
-_model: Optional[SentenceTransformer] = None
-_index: Optional[faiss.IndexFlatIP] = None
-_diseases: List[str] = []
+_vectorizer = None
+_symptom_matrix = None
+_diseases: list = []
 
 
-def initialize_rag() -> None:
-    """
-    Load the embedding model, build (or restore) the FAISS index, and cache
-    disease labels. Must be called exactly once during application startup.
-    """
-    global _model, _index, _diseases
+def get_embedding_model():
+    """Return the singleton TF-IDF vectorizer, lazy-built on first call."""
+    global _vectorizer
+    if _vectorizer is None:
+        _build()
+    return _vectorizer
 
-    logger.info("Loading sentence-transformer: %s", EMBEDDING_MODEL)
-    _model = SentenceTransformer(EMBEDDING_MODEL)
+
+def _build() -> None:
+    """Fit TF-IDF on the symptom dataset. Called once on first request."""
+    global _vectorizer, _symptom_matrix, _diseases
+    import pandas as pd
+    from sklearn.feature_extraction.text import TfidfVectorizer
 
     df = pd.read_csv(DATASET_PATH)
     _diseases = df["Disease"].tolist()
-    symptom_texts: List[str] = df["Symptoms"].astype(str).tolist()
+    symptom_texts = df["Symptoms"].astype(str).tolist()
 
-    if os.path.exists(FAISS_INDEX_PATH):
-        logger.info("Restoring FAISS index from disk: %s", FAISS_INDEX_PATH)
-        _index = faiss.read_index(FAISS_INDEX_PATH)
-    else:
-        logger.info("Building FAISS index for %d diseases …", len(_diseases))
-        embeddings: np.ndarray = _model.encode(
-            symptom_texts,
-            show_progress_bar=False,
-            normalize_embeddings=True,  # cosine similarity via inner product
-        ).astype(np.float32)
-
-        dim: int = embeddings.shape[1]
-        _index = faiss.IndexFlatIP(dim)
-        _index.add(embeddings)
-
-        os.makedirs(os.path.dirname(FAISS_INDEX_PATH), exist_ok=True)
-        faiss.write_index(_index, FAISS_INDEX_PATH)
-        logger.info(
-            "FAISS index built and saved — %d vectors, dim=%d", len(_diseases), dim
-        )
+    _vectorizer = TfidfVectorizer(max_features=1000, ngram_range=(1, 2), sublinear_tf=True)
+    _symptom_matrix = _vectorizer.fit_transform(symptom_texts)
 
 
-def search_symptoms(query: str, top_k: int = TOP_K_RESULTS) -> List[dict]:
+def search(query: str = None, top_k: int = 5, query_embedding=None) -> list:
     """
-    Perform a cosine-similarity search against the symptom index.
-
-    Args:
-        query: Free-text symptom description from the user.
-        top_k: Number of top results to return.
-
-    Returns:
-        List of dicts with keys 'disease' (str) and 'confidence' (int 0–100),
-        sorted by descending confidence.
-
-    Raises:
-        RuntimeError: If the RAG engine has not been initialized.
+    Return top-k most similar diseases with confidence scores (0-100).
+    query_embedding: pre-computed sparse TF-IDF vector (skips re-vectorizing).
     """
-    if _model is None or _index is None:
-        raise RuntimeError(
-            "RAG engine is not initialized. Ensure initialize_rag() ran at startup."
-        )
+    import numpy as np
+    from sklearn.metrics.pairwise import cosine_similarity
 
-    query_vec: np.ndarray = _model.encode(
-        [query], normalize_embeddings=True
-    ).astype(np.float32)
+    if _vectorizer is None:
+        _build()
 
-    scores, indices = _index.search(query_vec, top_k)
+    query_vec = query_embedding if query_embedding is not None else _vectorizer.transform([query])
+    sims = cosine_similarity(query_vec, _symptom_matrix)[0]
+    top_indices = np.argsort(sims)[::-1][:top_k]
 
-    results = []
-    for score, idx in zip(scores[0], indices[0]):
-        if idx == -1:
-            continue
-        # Cosine similarity in [0, 1] after normalization → scale to percentage
-        confidence = int(min(100, max(0, float(score) * 100)))
-        results.append({"disease": _diseases[idx], "confidence": confidence})
+    return [
+        {"disease": _diseases[i], "confidence": round(float(sims[i]) * 100, 1)}
+        for i in top_indices
+        if sims[i] > 0.01
+    ]
 
-    return results
